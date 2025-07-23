@@ -20,12 +20,12 @@ import { StreamingAvatarProvider, StreamingAvatarSessionState } from "./logic";
 import { LoadingIcon } from "./Icons";
 import { MessageHistory } from "./AvatarSession/MessageHistory";
 
-import { AVATARS } from "@/app/lib/constants";
+import { AVATAR_ID } from "@/app/lib/constants";
 
 const DEFAULT_CONFIG: StartAvatarRequest = {
   quality: AvatarQuality.Low,
-  avatarName: AVATARS[0].avatar_id,
-  knowledgeId: undefined,
+  avatarName: AVATAR_ID,
+  knowledgeId: process.env.NEXT_PUBLIC_KNOWLEDGE_ID || undefined,
   voice: {
     rate: 1.5,
     emotion: VoiceEmotion.EXCITED,
@@ -128,6 +128,8 @@ function InteractiveAvatar() {
     stopAvatar();
   });
 
+  // Removed auto-start to comply with browser autoplay policies
+
   useEffect(() => {
     if (stream && mediaStream.current) {
       mediaStream.current.srcObject = stream;
@@ -144,25 +146,27 @@ function InteractiveAvatar() {
           {sessionState !== StreamingAvatarSessionState.INACTIVE ? (
             <AvatarVideo ref={mediaStream} />
           ) : (
-            <AvatarConfig config={config} onConfigChange={setConfig} />
-          )}
-        </div>
-        <div className="flex flex-col gap-3 items-center justify-center p-4 border-t border-zinc-700 w-full">
-          {sessionState === StreamingAvatarSessionState.CONNECTED ? (
-            <AvatarControls />
-          ) : sessionState === StreamingAvatarSessionState.INACTIVE ? (
-            <div className="flex flex-row gap-4">
-              <Button onClick={() => startSessionV2(true)}>
-                Start Voice Chat
-              </Button>
-              <Button onClick={() => startSessionV2(false)}>
-                Start Text Chat
+            <div className="flex flex-col items-center justify-center h-full bg-zinc-800 p-8">
+              <h2 className="text-3xl font-bold text-white mb-4">Ready to chat?</h2>
+              <p className="text-zinc-400 mb-8">Click below to start your conversation</p>
+              <Button 
+                className="!bg-green-600 !text-white px-8 py-4 text-lg font-semibold" 
+                onClick={() => startSessionV2(false)}
+              >
+                Chat Now
               </Button>
             </div>
-          ) : (
-            <LoadingIcon />
           )}
         </div>
+        {sessionState !== StreamingAvatarSessionState.INACTIVE && (
+          <div className="flex flex-col gap-3 items-center justify-center p-4 border-t border-zinc-700 w-full">
+            {sessionState === StreamingAvatarSessionState.CONNECTED ? (
+              <AvatarControls />
+            ) : (
+              <LoadingIcon />
+            )}
+          </div>
+        )}
       </div>
       {sessionState === StreamingAvatarSessionState.CONNECTED && (
         <MessageHistory />

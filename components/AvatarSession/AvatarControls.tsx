@@ -17,6 +17,21 @@ export const AvatarControls: React.FC = () => {
   } = useVoiceChat();
   const { interrupt } = useInterrupt();
 
+  // Show a prompt to activate voice chat if not active
+  if (!isVoiceChatActive && !isVoiceChatLoading) {
+    return (
+      <div className="flex flex-col gap-3 relative w-full items-center">
+        <Button 
+          className="!bg-green-600 !text-white px-6 py-3" 
+          onClick={() => startVoiceChat()}
+        >
+          Start Voice Chat
+        </Button>
+        <p className="text-sm text-zinc-400">Click to enable microphone and start talking</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3 relative w-full items-center">
       <ToggleGroup
