@@ -106,6 +106,21 @@ function InteractiveAvatar() {
       }
     } catch (error) {
       console.error("Error starting avatar session:", error);
+
+      // Try to log more details if available
+      if (typeof error === "object" && error !== null) {
+        // Log all properties of the error object
+        console.error("Full error object:", JSON.stringify(error, null, 2));
+        if ("response" in error && error.response) {
+          (error.response as Response).text().then((text: string) => {
+            console.error("API Error Response Body:", text);
+          });
+        } else if ("data" in error) {
+          console.error("API Error Data:", (error as any).data);
+        } else if ("message" in error) {
+          console.error("API Error Message:", (error as any).message);
+        }
+      }
     }
   });
 
