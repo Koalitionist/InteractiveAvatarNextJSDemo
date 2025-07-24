@@ -1,4 +1,4 @@
-export const AVATAR_ID = process.env.NEXT_PUBLIC_AVARTAR_ID || "Ann_Therapist_public";
+export const AVATAR_ID = process.env.NEXT_PUBLIC_AVARTAR_ID || "fb2da5fe16a84b6eba7ae55ce9cd8331";
 
 export const STT_LANGUAGE_LIST = [
   { label: "Bulgarian", value: "bg", key: "bg" },
